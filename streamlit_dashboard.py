@@ -75,7 +75,7 @@ elif page == "Consumption Trends":
                    colors=['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896'])
             st.pyplot(fig)
 
-    # New chart - Line chart comparing Per capita over years (excluding empty columns)
+    # Improved chart - Line chart comparing Per capita over years (excluding empty columns)
     st.markdown("#### Consumption Trends Over Years")
     fig, ax = plt.subplots()
     valid_columns = ['Per capita 1992', 'Per capita 1997', 'Per capita 2008-2009', 'Per capita 2008-2009 (2)']
@@ -85,6 +85,8 @@ elif page == "Consumption Trends":
         data.plot(kind='line', x='Description', y=valid_columns, ax=ax)
         ax.set_ylabel("Per Capita Consumption")
         ax.set_xlabel("Beverage Type")
+        plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+        plt.tight_layout()  # Adjust layout to prevent clipping of tick-labels
         st.pyplot(fig)
     else:
         st.error("No valid data available for the line chart.")
