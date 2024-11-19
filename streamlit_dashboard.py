@@ -20,31 +20,7 @@ st.write(data)
 
 # Custom CSS for styling
 st.markdown("""
-    <style>
-        .navbar {
-            display: flex;
-            justify-content: center;
-            gap: 1.5em;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-        }
-        .nav-item {
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-        }
-        .nav-item.active {
-            background-color: #4a3fdb;
-        }
-        .nav-item:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-    </style>
+    
 """, unsafe_allow_html=True)
 
 # Navigation bar with simpler logic for page selection
@@ -52,8 +28,8 @@ page = st.sidebar.radio("Select Page", ["Overview", "Consumption Trends", "Energ
 
 # Display content based on the selected page
 if page == "Overview":
-    st.markdown("<h1 class='title'>Overview of Dataset</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subtitle'>General overview and summary statistics</p>", unsafe_allow_html=True)
+    st.markdown("Overview of Dataset", unsafe_allow_html=True)
+    st.markdown("General overview and summary statistics", unsafe_allow_html=True)
     st.write("This section provides a high-level overview of the dataset and its key variables.")
 
     # Display dataset preview
@@ -65,8 +41,8 @@ if page == "Overview":
     st.write(data.describe())
 
 elif page == "Consumption Trends":
-    st.markdown("<h1 class='title'>Consumption Trends</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subtitle'>Analyzing trends over different years</p>", unsafe_allow_html=True)
+    st.markdown("Consumption Trends", unsafe_allow_html=True)
+    st.markdown("Analyzing trends over different years", unsafe_allow_html=True)
 
     # Layout for charts in two columns
     col1, col2 = st.columns(2)
@@ -84,9 +60,20 @@ elif page == "Consumption Trends":
     with col2:
         st.markdown("#### Percentage Consumption by Beverage Type (1992)")
         fig, ax = plt.subplots()
-        ax.pie(data['% consume'].dropna(), labels=data['Description'], autopct='%1.1f%%', startangle=140,
-               colors=['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896'])
-        st.pyplot(fig)
+
+        # Ensure '% consume' column is numeric
+        data['% consume'] = pd.to_numeric(data['% consume'], errors='coerce')
+
+        # Drop NaN values
+        data = data.dropna(subset=['% consume', 'Description'])
+
+        # Check if data is empty after dropping NaN values
+        if data.empty:
+            st.error("No valid data available for the pie chart.")
+        else:
+            ax.pie(data['% consume'], labels=data['Description'], autopct='%1.1f%%', startangle=140,
+                   colors=['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896'])
+            st.pyplot(fig)
 
     # Third chart - Line chart comparing Per capita over years
     st.markdown("#### Consumption Trends Over Years")
@@ -98,8 +85,8 @@ elif page == "Consumption Trends":
     st.pyplot(fig)
 
 elif page == "Energy Sources":
-    st.markdown("<h1 class='title'>Energy Sources</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subtitle'>Analysis of energy contribution by source</p>", unsafe_allow_html=True)
+    st.markdown("Energy Sources", unsafe_allow_html=True)
+    st.markdown("Analysis of energy contribution by source", unsafe_allow_html=True)
 
     # Layout for charts in two columns
     col1, col2 = st.columns(2)
