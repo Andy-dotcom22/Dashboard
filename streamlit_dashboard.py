@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 st.title('Data Visualization App')
 
 # Define file path and load data
-file_path = "/content/DataProject.xlsx"
+file_path = "DataProject.xlsx"
 
 # Load the database
 try:
