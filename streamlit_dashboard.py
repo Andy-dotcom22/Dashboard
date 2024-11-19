@@ -61,8 +61,8 @@ elif page == "Consumption Trends":
         st.markdown("#### Percentage Consumption by Beverage Type (1992)")
         fig, ax = plt.subplots()
 
-        # Ensure '% consume' column is numeric
-        data['% consume'] = pd.to_numeric(data['% consume'], errors='coerce')
+        # Ensure '% consume' column is numeric and remove '%' sign
+        data['% consume'] = data['% consume'].str.rstrip('%').astype('float') / 100.0
 
         # Drop NaN values
         data = data.dropna(subset=['% consume', 'Description'])
@@ -75,14 +75,19 @@ elif page == "Consumption Trends":
                    colors=['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896'])
             st.pyplot(fig)
 
-    # Third chart - Line chart comparing Per capita over years
+    # New chart - Line chart comparing Per capita over years (excluding empty columns)
     st.markdown("#### Consumption Trends Over Years")
     fig, ax = plt.subplots()
-    data.plot(kind='line', x='Description',
-              y=['Per capita 1992', 'Per capita 1997', 'Per capita 2008-2009', 'Per capita 2008-2009 (2)'], ax=ax)
-    ax.set_ylabel("Per Capita Consumption")
-    ax.set_xlabel("Beverage Type")
-    st.pyplot(fig)
+    valid_columns = ['Per capita 1992', 'Per capita 1997', 'Per capita 2008-2009', 'Per capita 2008-2009 (2)']
+    valid_columns = [col for col in valid_columns if col in data.columns and not data[col].isnull().all()]
+    
+    if valid_columns:
+        data.plot(kind='line', x='Description', y=valid_columns, ax=ax)
+        ax.set_ylabel("Per Capita Consumption")
+        ax.set_xlabel("Beverage Type")
+        st.pyplot(fig)
+    else:
+        st.error("No valid data available for the line chart.")
 
 elif page == "Energy Sources":
     st.markdown("Energy Sources", unsafe_allow_html=True)
