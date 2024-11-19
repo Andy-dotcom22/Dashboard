@@ -6,14 +6,17 @@ import matplotlib.pyplot as plt
 st.title('Data Visualization App')
 
 # Define file path and load data
-file_path = "DataProject.xlsx"
+file_path = "DataProject.csv"
 
 # Load the database
 try:
-    data = pd.read_excel(file_path, sheet_name="Table A1")
+    data = pd.read_csv(file_path)
 except Exception as e:
-    st.error("Failed to load data. Please check the file path and sheet name.")
+    st.error("Failed to load data. Please check the file path.")
     st.stop()
+
+# Display the data
+st.write(data)
 
 # Custom CSS for styling
 st.markdown("""
